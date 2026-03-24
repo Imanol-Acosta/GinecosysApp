@@ -4,8 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import ucne.edu.ginecosys.presentation.home.HomeScreen
+import androidx.navigation.toRoute
 import ucne.edu.ginecosys.presentation.detail.DetailScreen
+import ucne.edu.ginecosys.presentation.login.LoginScreen
 
 @Composable
 fun NavHost(
@@ -13,13 +14,33 @@ fun NavHost(
 ) {
     NavHost(
         navController = navHostController,
-        startDestination = Screen.Home
+        startDestination = Screen.Login
     ) {
-        composable<Screen.Home> {
-            HomeScreen(
-                goToDetail = {
-                    navHostController.navigate(Screen.Detail(id = 0))
+        composable<Screen.Login> {
+            LoginScreen(
+                onLoginSuccess = {
+                    navHostController.navigate(Screen.Main) {
+                        popUpTo(Screen.Login) { inclusive = true }
+                    }
                 }
+            )
+        }
+
+        composable<Screen.Main> {
+            MainScreen(rootNavController = navHostController)
+        }
+
+        composable<Screen.AddPatient> {
+            ucne.edu.ginecosys.presentation.patients.AddPatientScreen(
+                navigateBack = { navHostController.navigateUp() }
+            )
+        }
+
+        composable<Screen.PatientProfile> { backStackEntry ->
+            val profileRoute = backStackEntry.toRoute<Screen.PatientProfile>()
+            ucne.edu.ginecosys.presentation.patients.PatientProfileScreen(
+                id = profileRoute.id,
+                navigateBack = { navHostController.navigateUp() }
             )
         }
 
