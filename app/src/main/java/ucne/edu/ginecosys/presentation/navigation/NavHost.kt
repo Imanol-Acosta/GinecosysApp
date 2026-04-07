@@ -44,6 +44,12 @@ fun NavHost(
             )
         }
 
+        composable<Screen.AddAppointment> {
+            ucne.edu.ginecosys.presentation.appointments.AddAppointmentScreen(
+                navigateBack = { navHostController.navigateUp() }
+            )
+        }
+
         composable<Screen.Detail> {
             DetailScreen(
                 navigateBack = {

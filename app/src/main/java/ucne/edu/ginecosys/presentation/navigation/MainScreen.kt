@@ -116,12 +116,18 @@ fun MainScreen(
                 HomeScreen(
                     goToDetail = {
                         rootNavController.navigate(Screen.Detail(id = 0))
+                    },
+                    goToAddAppointment = {
+                        rootNavController.navigate(Screen.AddAppointment)
                     }
                 )
             }
             
             composable<Screen.Appointments> {
                 AppointmentsScreen(
+                    goToAddAppointment = {
+                        rootNavController.navigate(Screen.AddAppointment)
+                    },
                     goToDetail = {
                         rootNavController.navigate(Screen.Detail(id = 0))
                     }

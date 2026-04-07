@@ -25,14 +25,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ucne.edu.ginecosys.R
 
+import androidx.hilt.navigation.compose.hiltViewModel
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
+    viewModel: LoginViewModel = hiltViewModel(),
     onLoginSuccess: () -> Unit
 ) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
+    val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(uiState.isSuccess) {
+        if (uiState.isSuccess) {
+            onLoginSuccess()
+        }
+    }
 
     val isDark = isSystemInDarkTheme()
     val backgroundColor = if (isDark) Color(0xFF121212) else Color.White
@@ -87,8 +94,8 @@ fun LoginScreen(
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             OutlinedTextField(
-                value = email,
-                onValueChange = { email = it; errorMessage = null },
+                value = uiState.email,
+                onValueChange = { viewModel.onEvent(LoginEvent.OnEmailChanged(it)) },
                 placeholder = { Text("doctor@clinica.com", color = Color.Gray) },
                 leadingIcon = {
                     Icon(imageVector = Icons.Default.Email, contentDescription = "Email", tint = Color.Gray)
@@ -117,8 +124,8 @@ fun LoginScreen(
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             OutlinedTextField(
-                value = password,
-                onValueChange = { password = it; errorMessage = null },
+                value = uiState.password,
+                onValueChange = { viewModel.onEvent(LoginEvent.OnPasswordChanged(it)) },
                 placeholder = { Text("........", color = Color.Gray) },
                 leadingIcon = {
                     Icon(imageVector = Icons.Default.Lock, contentDescription = "Lock", tint = Color.Gray)
@@ -137,40 +144,39 @@ fun LoginScreen(
             )
         }
         
-        if (errorMessage != null) {
+        if (uiState.error != null) {
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = errorMessage!!, color = Color.Red, fontSize = 14.sp)
+            Text(text = uiState.error!!, color = Color.Red, fontSize = 14.sp)
         }
         
         Spacer(modifier = Modifier.height(32.dp))
         
         // Login Button
         Button(
-            onClick = {
-                if (email.trim() == "admin" && password == "admin" || email.trim() == "doctor@clinica.com" && password == "123") {
-                    onLoginSuccess()
-                } else {
-                    errorMessage = "Credenciales incorrectas (Usa admin / admin)"
-                }
-            },
+            onClick = { viewModel.onEvent(LoginEvent.Submit) },
+            enabled = !uiState.isLoading,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(containerColor = primaryPink)
         ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.Login,
-                contentDescription = "Login",
-                modifier = Modifier.padding(end = 8.dp),
-                tint = Color.White
-            )
-            Text(
-                text = "Iniciar Sesión",
-                color = Color.White,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
+            if (uiState.isLoading) {
+                CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
+            } else {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Login,
+                    contentDescription = "Login",
+                    modifier = Modifier.padding(end = 8.dp),
+                    tint = Color.White
+                )
+                Text(
+                    text = "Iniciar Sesión",
+                    color = Color.White,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
         
         Spacer(modifier = Modifier.weight(1f))

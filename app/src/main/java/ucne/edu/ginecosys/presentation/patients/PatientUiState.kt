@@ -19,5 +19,6 @@ data class PatientUiState(
     val showError: Boolean = false,
     
     // Profile State
-    val currentPatient: Patient? = null
+    val currentPatient: Patient? = null,
+    val patientAppointments: List<ucne.edu.ginecosys.domain.model.Appointment> = emptyList()
 )

@@ -18,6 +18,7 @@ import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.GroupAdd
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,11 +30,18 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    goToDetail: () -> Unit
+    viewModel: HomeViewModel = hiltViewModel(),
+    goToDetail: () -> Unit,
+    goToAddAppointment: () -> Unit = {}
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    
     val isDark = isSystemInDarkTheme()
     val bgColor = if (isDark) Color(0xFF121212) else Color(0xFFF8F9FA)
     val textColor = if (isDark) Color.White else Color(0xFF0A2342)
@@ -80,7 +88,7 @@ fun HomeScreen(
                         StatCard(
                             modifier = Modifier.weight(1f),
                             title = "CITAS HOY",
-                            value = "0",
+                            value = "${uiState.appointmentsToday}",
                             icon = Icons.Outlined.CalendarMonth,
                             iconTint = primaryPink,
                             iconBg = primaryPink.copy(alpha = 0.1f),
@@ -91,7 +99,7 @@ fun HomeScreen(
                         StatCard(
                             modifier = Modifier.weight(1f),
                             title = "PACIENTES",
-                            value = "0",
+                            value = "${uiState.totalPatients}",
                             icon = Icons.Filled.People,
                             iconTint = Color(0xFF3B82F6),
                             iconBg = Color(0xFF3B82F6).copy(alpha = 0.1f),
@@ -107,7 +115,7 @@ fun HomeScreen(
                         StatCard(
                             modifier = Modifier.weight(1f),
                             title = "INGRESOS",
-                            value = "RD$0",
+                            value = uiState.incomeMonth,
                             icon = Icons.Filled.AttachMoney,
                             iconTint = Color(0xFF10B981),
                             iconBg = Color(0xFF10B981).copy(alpha = 0.1f),
@@ -139,7 +147,7 @@ fun HomeScreen(
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Button(
-                    onClick = { /* TODO */ },
+                    onClick = goToAddAppointment,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp),
@@ -197,21 +205,42 @@ fun HomeScreen(
                         
                         Spacer(modifier = Modifier.height(32.dp))
                         
-                        Box(
-                            modifier = Modifier
-                                .size(50.dp)
-                                .background(if (isDark) Color(0xFF2A2A2A) else Color(0xFFF3F4F6), CircleShape),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(Icons.Outlined.CalendarMonth, contentDescription = null, tint = Color.Gray)
+                        if (uiState.todayAppointmentsList.isEmpty()) {
+                            Box(
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .background(if (isDark) Color(0xFF2A2A2A) else Color(0xFFF3F4F6), CircleShape),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(Icons.Outlined.CalendarMonth, contentDescription = null, tint = Color.Gray)
+                            }
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text("No hay citas programadas", color = textColor, fontWeight = FontWeight.Bold)
+                            Text("Hoy no tienes pacientes agendados.", color = subtitleColor, fontSize = 14.sp)
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text("+ Agendar Cita", color = primaryPink, fontWeight = FontWeight.Medium, modifier = Modifier.clickable { })
+                            
+                            Spacer(modifier = Modifier.height(16.dp))
+                        } else {
+                            Column(modifier = Modifier.fillMaxWidth()) {
+                                uiState.todayAppointmentsList.take(3).forEach { appt ->
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Box(
+                                            modifier = Modifier.size(10.dp).background(primaryPink, CircleShape)
+                                        )
+                                        Spacer(modifier = Modifier.width(16.dp))
+                                        Column {
+                                            Text(appt.patientName, color = textColor, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                                            Text("${appt.type} - ${appt.startTime}", color = subtitleColor, fontSize = 12.sp)
+                                        }
+                                    }
+                                }
+                            }
                         }
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text("No hay citas programadas", color = textColor, fontWeight = FontWeight.Bold)
-                        Text("Hoy no tienes pacientes agendados.", color = subtitleColor, fontSize = 14.sp)
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text("+ Agendar Cita", color = primaryPink, fontWeight = FontWeight.Medium, modifier = Modifier.clickable { })
                         
-                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
             }

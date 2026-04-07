@@ -333,51 +333,57 @@ fun PatientProfileBody(
                 modifier = Modifier.padding(top = 8.dp)
             )
 
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(top = 8.dp, end = 12.dp)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(16.dp)
-                            .border(2.dp, primaryPink, CircleShape)
-                            .background(Color.Transparent, CircleShape)
-                    )
-                    Box(
-                        modifier = Modifier
-                            .width(2.dp)
-                            .height(100.dp)
-                            .background(primaryPink.copy(alpha = 0.3f))
-                    )
-                }
-
-                Card(
-                    shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = cardBg),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, borderColor),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth()
+            if (state.patientAppointments.isEmpty()) {
+                Text("No hay consultas registradas", color = subtitleColor, fontSize = 14.sp)
+            } else {
+                state.patientAppointments.sortedByDescending { it.startTime }.forEach { appointment ->
+                    Row(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.padding(top = 8.dp, end = 12.dp)
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .background(primaryPink.copy(alpha = 0.1f), RoundedCornerShape(4.dp))
-                                    .padding(horizontal = 8.dp, vertical = 4.dp)
-                            ) {
-                                Text("CONSULTA GENERAL", color = primaryPink, fontSize = 10.sp, fontWeight = FontWeight.Bold)
-                            }
-                            
-                            Text("20 de marzo de 2026", color = subtitleColor, fontSize = 12.sp)
+                                    .size(16.dp)
+                                    .border(2.dp, primaryPink, CircleShape)
+                                    .background(Color.Transparent, CircleShape)
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .width(2.dp)
+                                    .height(100.dp)
+                                    .background(primaryPink.copy(alpha = 0.3f))
+                            )
                         }
-                        
-                        Spacer(modifier = Modifier.height(16.dp))
-                        
-                        Text("xx", color = textColor, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+
+                        Card(
+                            shape = RoundedCornerShape(12.dp),
+                            colors = CardDefaults.cardColors(containerColor = cardBg),
+                            border = androidx.compose.foundation.BorderStroke(1.dp, borderColor),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Column(modifier = Modifier.padding(16.dp)) {
+                                Row(
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .background(primaryPink.copy(alpha = 0.1f), RoundedCornerShape(4.dp))
+                                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                                    ) {
+                                        Text(appointment.type.uppercase(), color = primaryPink, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                                    }
+                                    
+                                    Text(appointment.startTime, color = subtitleColor, fontSize = 12.sp)
+                                }
+                                
+                                Spacer(modifier = Modifier.height(16.dp))
+                                
+                                Text(appointment.notes ?: "Sin notas", color = textColor, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                            }
+                        }
                     }
                 }
             }

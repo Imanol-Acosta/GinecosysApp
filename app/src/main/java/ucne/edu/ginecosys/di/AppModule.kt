@@ -17,4 +17,16 @@ abstract class AppModule {
     abstract fun bindPatientRepository(
         patientRepositoryImpl: PatientRepositoryImpl
     ): PatientRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAuthRepository(
+        authRepositoryImpl: ucne.edu.ginecosys.data.repository.AuthRepositoryImpl
+    ): ucne.edu.ginecosys.domain.repository.AuthRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAppointmentRepository(
+        appointmentRepositoryImpl: ucne.edu.ginecosys.data.repository.AppointmentRepositoryImpl
+    ): ucne.edu.ginecosys.domain.repository.AppointmentRepository
 }

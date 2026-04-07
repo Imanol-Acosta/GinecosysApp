@@ -25,5 +25,8 @@ sealed class Screen {
     data object Appointments : Screen()
 
     @Serializable
+    data object AddAppointment : Screen()
+
+    @Serializable
     data class Detail(val id: Int) : Screen()
 }

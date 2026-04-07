@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ucne.edu.ginecosys.domain.model.Patient
+import ucne.edu.ginecosys.domain.repository.AppointmentRepository
 import ucne.edu.ginecosys.domain.usecase.AddPatientUseCase
 import ucne.edu.ginecosys.domain.usecase.GetPatientByIdUseCase
 import ucne.edu.ginecosys.domain.usecase.ObservePatientsUseCase
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class PatientViewModel @Inject constructor(
     private val observePatientsUseCase: ObservePatientsUseCase,
     private val addPatientUseCase: AddPatientUseCase,
-    private val getPatientByIdUseCase: GetPatientByIdUseCase
+    private val getPatientByIdUseCase: GetPatientByIdUseCase,
+    private val appointmentRepository: AppointmentRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PatientUiState())
@@ -88,7 +90,14 @@ class PatientViewModel @Inject constructor(
     private fun loadPatient(id: String) {
         viewModelScope.launch {
             val patient = getPatientByIdUseCase(id)
-            _state.update { it.copy(currentPatient = patient) }
+            
+            appointmentRepository.getAppointments().collect { lists ->
+                val myAppointments = lists.filter { it.patientId == id }
+                _state.update { it.copy(
+                    currentPatient = patient,
+                    patientAppointments = myAppointments
+                ) }
+            }
         }
     }
     
