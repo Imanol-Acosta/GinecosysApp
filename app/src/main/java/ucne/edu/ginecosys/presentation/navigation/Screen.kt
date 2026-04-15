@@ -29,4 +29,33 @@ sealed class Screen {
 
     @Serializable
     data class Detail(val id: Int) : Screen()
+
+    // Phase 1 - Edit Patient
+    @Serializable
+    data class EditPatient(val id: String) : Screen()
+
+    @Serializable
+    data class EditClinicalData(val id: String) : Screen()
+
+    @Serializable
+    data class EditAntecedents(val id: String) : Screen()
+
+    // Phase 2 - Consultations
+    @Serializable
+    data class NewConsultation(val patientId: String) : Screen()
+
+    @Serializable
+    data class EditConsultation(val consultationId: String) : Screen()
+
+    // Phase 4 - Records
+    @Serializable
+    data object Records : Screen()
+
+    // Phase 5 - Insurance
+    @Serializable
+    data object Insurance : Screen()
+
+    // Phase 6 - Checkout
+    @Serializable
+    data class Checkout(val appointmentId: String) : Screen()
 }

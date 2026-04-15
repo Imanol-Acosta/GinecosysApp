@@ -13,6 +13,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import ucne.edu.ginecosys.core.config.SupabaseConfig
 import ucne.edu.ginecosys.core.network.SupabaseInterceptor
 import ucne.edu.ginecosys.data.remote.AuthApi
+import ucne.edu.ginecosys.data.remote.SupabaseConsultationApi
 import javax.inject.Singleton
 
 @Module
@@ -76,5 +77,17 @@ object NetworkModule {
     @Singleton
     fun provideSupabaseClinicApi(retrofit: Retrofit): ucne.edu.ginecosys.data.remote.SupabaseClinicApi {
         return retrofit.create(ucne.edu.ginecosys.data.remote.SupabaseClinicApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSupabaseConsultationApi(retrofit: Retrofit): SupabaseConsultationApi {
+        return retrofit.create(SupabaseConsultationApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSupabaseInsuranceApi(retrofit: Retrofit): ucne.edu.ginecosys.data.remote.SupabaseInsuranceApi {
+        return retrofit.create(ucne.edu.ginecosys.data.remote.SupabaseInsuranceApi::class.java)
     }
 }

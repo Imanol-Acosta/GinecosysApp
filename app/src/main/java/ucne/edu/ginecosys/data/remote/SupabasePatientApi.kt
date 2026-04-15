@@ -10,7 +10,11 @@ import ucne.edu.ginecosys.data.remote.dto.PatientDto
 
 interface SupabasePatientApi {
     @GET("rest/v1/patients")
-    suspend fun getPatients(): List<PatientDto>
+    suspend fun getPatients(
+        @Query("select") select: String = "*",
+        @Query("clinic_id") eqClinicId: String
+    ): List<PatientDto>
+
 
     @POST("rest/v1/patients")
     suspend fun createPatient(@Body patient: PatientDto): List<PatientDto>
@@ -21,6 +25,13 @@ interface SupabasePatientApi {
         @Query("id") eqId: String,
         @Body patient: PatientDto
     ): List<PatientDto>
+
+    // Partial update with Map body for specific field updates
+    @PATCH("rest/v1/patients")
+    suspend fun updatePatientFields(
+        @Query("id") eqId: String,
+        @Body fields: Map<String, @JvmSuppressWildcards Any?>
+    )
 
     // Usage: deletePatient("eq.${id}")
     @DELETE("rest/v1/patients")

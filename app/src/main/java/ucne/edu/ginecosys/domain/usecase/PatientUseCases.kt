@@ -26,3 +26,19 @@ class GetPatientByIdUseCase @Inject constructor(
         return repository.getPatientById(id)
     }
 }
+
+class UpdatePatientProfileUseCase @Inject constructor(
+    private val repository: PatientRepository
+) {
+    suspend operator fun invoke(patient: Patient) {
+        repository.updatePatientProfile(patient)
+    }
+}
+
+class UpdatePatientFieldsUseCase @Inject constructor(
+    private val repository: PatientRepository
+) {
+    suspend operator fun invoke(patientId: String, fields: Map<String, Any?>) {
+        repository.updatePatientFields(patientId, fields)
+    }
+}

@@ -13,7 +13,11 @@ interface PatientDao {
     @Query("SELECT * FROM patients WHERE id = :id AND syncStatus != 'PENDING_DELETE'")
     suspend fun getPatientById(id: String): PatientEntity?
 
+    @Query("SELECT id FROM patients WHERE syncStatus IN ('PENDING_INSERT', 'PENDING_UPDATE', 'PENDING_DELETE')")
+    suspend fun getUnsyncedIds(): List<String>
+
     @Query("SELECT * FROM patients WHERE syncStatus IN ('PENDING_INSERT', 'PENDING_UPDATE', 'PENDING_DELETE')")
+
     suspend fun getUnsyncedPatients(): List<PatientEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

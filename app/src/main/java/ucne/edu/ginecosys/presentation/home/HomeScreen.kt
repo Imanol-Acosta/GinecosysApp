@@ -38,7 +38,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     goToDetail: () -> Unit,
-    goToAddAppointment: () -> Unit = {}
+    goToAddAppointment: () -> Unit = {},
+    goToAddPatient: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     
@@ -160,7 +161,7 @@ fun HomeScreen(
                 }
                 Spacer(modifier = Modifier.height(12.dp))
                 OutlinedButton(
-                    onClick = { /* TODO */ },
+                    onClick = goToAddPatient,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp),

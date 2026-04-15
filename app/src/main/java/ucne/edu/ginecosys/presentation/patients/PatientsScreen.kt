@@ -201,7 +201,7 @@ fun PatientsBody(
                                     type = "General",
                                     idOrCedula = if (patient.cedula.isNotBlank()) patient.cedula else "Sin Cédula",
                                     ageAndGender = "${patient.getAge()} Años - ${patient.gender}",
-                                    insuranceType = patient.insuranceType,
+                                    insuranceType = patient.ars.ifBlank { "Sin ARS" },
                                     textColor = textColor,
                                     subtitleColor = subtitleColor,
                                     borderColor = borderColor,

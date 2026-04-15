@@ -8,6 +8,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import ucne.edu.ginecosys.data.local.AppDatabase
+import ucne.edu.ginecosys.data.local.dao.ConsultationDao
 import ucne.edu.ginecosys.data.local.dao.PatientDao
 import javax.inject.Singleton
 
@@ -29,12 +30,22 @@ object DatabaseModule {
     }
 
     @Provides
-    fun providePatientDao(database: AppDatabase): ucne.edu.ginecosys.data.local.dao.PatientDao {
+    fun providePatientDao(database: AppDatabase): PatientDao {
         return database.patientDao()
     }
 
     @Provides
     fun provideAppointmentDao(database: AppDatabase): ucne.edu.ginecosys.data.local.dao.AppointmentDao {
         return database.appointmentDao()
+    }
+
+    @Provides
+    fun provideConsultationDao(database: AppDatabase): ConsultationDao {
+        return database.consultationDao()
+    }
+
+    @Provides
+    fun provideInsuranceDao(database: AppDatabase): ucne.edu.ginecosys.data.local.dao.InsuranceDao {
+        return database.insuranceDao()
     }
 }
